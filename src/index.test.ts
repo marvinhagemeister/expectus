@@ -44,6 +44,12 @@ describe("Assertion", () => {
       });
     });
 
+    it("works with property", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: 1 }).to.have.property("foo").that.equals(1);
+      });
+    });
+
     describe.skip(".deep", () => {
       it("supports objects", () => {
         assert.doesNotThrow(() => {

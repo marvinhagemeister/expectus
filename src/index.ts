@@ -41,7 +41,6 @@ class Assertion<T> {
   private _deep = false;
   private _invert = false;
   private _anyKeys = false;
-  private _lastProperty = noArg;
   private _nestedProperty = false;
   constructor(public actual: T) {}
 
@@ -73,7 +72,6 @@ class Assertion<T> {
     this._deep = false;
     this._invert = false;
     this._anyKeys = false;
-    this._lastProperty = noArg;
     this._nestedProperty = false;
     return this;
   }
@@ -274,7 +272,6 @@ class Assertion<T> {
           }, this.actual)
       : this.actual;
 
-    this._lastProperty = (actual as any)[name];
     if (arguments.length > 1) {
       this.assert({
         result: name in actual && (actual as any)[name] === value,
@@ -290,13 +287,11 @@ class Assertion<T> {
         messageNot: `Expected #{this} not to have a property ${name}`,
       });
     }
-    return this;
+    return new Assertion((actual as any)[name]);
   }
 
   a(expected: ValueType) {
-    const value =
-      this._lastProperty !== noArg ? this._lastProperty : this.actual;
-    const actual = Array.isArray(value) ? "array" : typeof value;
+    const actual = Array.isArray(this.actual) ? "array" : typeof this.actual;
     this.assert({
       result: actual === expected,
       actual,
