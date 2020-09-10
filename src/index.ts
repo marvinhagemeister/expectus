@@ -2,12 +2,10 @@ import { SinonSpy } from "sinon";
 import { formatType, printDiff } from "./print";
 
 // FIXME: .equalNode()
-// FIXME: .nested (property)
-// FIXME: .not.property()
 // FIXME: .throw(RegExp)
 
 function isSinonFn(x: any): x is SinonSpy {
-  return typeof x === "function" && "callCount" in x;
+  return x != null && "callCount" in x;
 }
 
 function assertSinonFn(x: any): x is SinonSpy {
@@ -43,6 +41,7 @@ class Assertion<T> {
   private _deep = false;
   private _invert = false;
   private _anyKeys = false;
+  private _nestedProperty = false;
   constructor(public actual: T) {}
 
   private get _notSuffix() {
@@ -73,6 +72,7 @@ class Assertion<T> {
     this._deep = false;
     this._invert = false;
     this._anyKeys = false;
+    this._nestedProperty = false;
     return this;
   }
 
@@ -101,6 +101,11 @@ class Assertion<T> {
 
   get not() {
     this._invert = !this._invert;
+    return this;
+  }
+
+  get nested() {
+    this._nestedProperty = true;
     return this;
   }
 
@@ -253,14 +258,35 @@ class Assertion<T> {
   }
 
   property(name: string, value?: any) {
-    if (arguments.length === 1) {
-      if (!(name in this.actual)) {
-        throw new Error("fail");
-      }
-    } else if ((this.actual as any)[name] !== value) {
-      throw new Error("fail");
-    }
+    const actual = this._nestedProperty
+      ? name
+          .split(/[.[\]]/)
+          .filter(Boolean)
+          .reduce((acc, key, i, arr) => {
+            // Break out early to support 'in' operator later
+            if (i + 1 === arr.length) {
+              name = key;
+              return acc;
+            }
+            return (acc as any)[key];
+          }, this.actual)
+      : this.actual;
 
+    if (arguments.length > 1) {
+      this.assert({
+        result: name in actual && (actual as any)[name] === value,
+        message: `Expected #{this} to have a property ${name} with the value #{exp}.`,
+        messageNot: `Expected #{this} not to have a property ${name} with the value #{exp}.`,
+        actual: (actual as any)[name],
+        expected: value,
+      });
+    } else {
+      this.assert({
+        result: name in actual,
+        message: `Expected #{this} to have a property ${name}`,
+        messageNot: `Expected #{this} not to have a property ${name}`,
+      });
+    }
     return this;
   }
 

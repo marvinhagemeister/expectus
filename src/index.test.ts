@@ -377,7 +377,38 @@ describe("Assertion", () => {
       });
     });
 
-    // FIXME: not
+    it("supports .not values", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: 1 }).not.property("bar", 1);
+      });
+      assert.doesNotThrow(() => {
+        expect({ foo: 1 }).not.property("foo", 2);
+      });
+
+      assert.throws(() => {
+        expect({ foo: 1 }).not.property("foo", 1);
+      });
+    });
+
+    it("supports .not without value", () => {
+      assert.doesNotThrow(() => {
+        expect({ bar: 1 }).not.property("foo");
+      });
+
+      assert.throws(() => {
+        expect({ foo: 1 }).not.property("foo");
+      });
+    });
+
+    it("supports .nested.property()", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: { bar: 1 } }).nested.property("foo.bar", 1);
+      });
+
+      assert.doesNotThrow(() => {
+        expect({ foo: [{ bar: 1 }] }).nested.property("foo[0].bar", 1);
+      });
+    });
   });
 
   describe.skip(".keys()", () => {
