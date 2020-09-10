@@ -676,6 +676,38 @@ describe("Assertion", () => {
       });
     });
 
+    describe(".callCount()", () => {
+      it("supports .callCount()", () => {
+        assert.throws(() => {
+          expect(true).callCount(1);
+        });
+
+        const spy = sinon.spy();
+        assert.throws(() => {
+          expect(spy).callCount(1);
+        });
+
+        spy();
+
+        assert.doesNotThrow(() => {
+          expect(spy).callCount(1);
+        });
+      });
+
+      it("supports .not.callCount()", () => {
+        const spy = sinon.spy();
+        assert.doesNotThrow(() => {
+          expect(spy).not.callCount(1);
+        });
+
+        spy();
+
+        assert.throws(() => {
+          expect(spy).not.callCount(1);
+        });
+      });
+    });
+
     describe(".calledOnce", () => {
       it("supports .calledOnce", () => {
         assert.throws(() => {

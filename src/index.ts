@@ -373,6 +373,11 @@ class Assertion<T> {
     return this;
   }
 
+  callCount(count: number) {
+    this.assertCallCount(this.actual, count);
+    return this;
+  }
+
   calledWith(...params: any[]) {
     if (assertSinonFn(this.actual)) {
       const res = !this.actual.calledWith(...params);
