@@ -391,7 +391,7 @@ class Assertion<T> {
     return this.include(value, message);
   }
 
-  lengthOf(expected: any, message?: string) {
+  lengthOf(expected: number, message?: string) {
     const actual = (this.actual as any).length;
     const prefix = message ? message + ": " : "";
     this.assert({
@@ -402,6 +402,10 @@ class Assertion<T> {
       messageNot: `${prefix}Expected #{this} not to have a length of #{exp}, but got #{act} instead.`,
     });
     return this;
+  }
+
+  length(expected: number, message?: string) {
+    return this.lengthOf(expected, message);
   }
 
   callCount(count: number) {

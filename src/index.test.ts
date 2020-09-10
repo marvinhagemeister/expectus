@@ -640,6 +640,22 @@ describe("Assertion", () => {
         expect([]).not.lengthOf(2);
       });
     });
+
+    it("supports .length shorthand", () => {
+      assert.doesNotThrow(() => {
+        expect("aa").length(2);
+      });
+      assert.doesNotThrow(() => {
+        expect([1]).length(1);
+      });
+
+      assert.throws(() => {
+        expect("aa").length(3);
+      });
+      assert.throws(() => {
+        expect([]).length(2);
+      });
+    });
   });
 
   describe(".below()", () => {
