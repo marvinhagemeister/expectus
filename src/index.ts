@@ -3,6 +3,8 @@ import { formatType, printDiff } from "./print";
 
 // FIXME: .equalNode()
 // FIXME: .throw(RegExp)
+// FIXME: deep equality
+// FIXME: reset flags
 
 function isSinonFn(x: any): x is SinonSpy {
   return x != null && "callCount" in x;
@@ -203,10 +205,11 @@ class Assertion<T> {
   eq(expected: T, message?: string) {
     return this.equal(expected, message);
   }
-  eql(expected: T, message?: string) {
+  equals(expected: T, message?: string) {
     return this.equal(expected, message);
   }
-  equals(expected: T, message?: string) {
+  eql(expected: T, message?: string) {
+    this._deep = true;
     return this.equal(expected, message);
   }
 

@@ -20,14 +20,6 @@ describe("Assertion", () => {
       });
     });
 
-    it("supports .eql shorthand", () => {
-      expect(true).eql(true);
-
-      assert.throws(() => {
-        expect(true).eql(false);
-      });
-    });
-
     it("supports .eq shorthand", () => {
       expect(true).eq(true);
 
@@ -82,6 +74,14 @@ describe("Assertion", () => {
       });
 
       // FIXME: not
+
+      it("supports .eql shorthand", () => {
+        expect({ foo: [1] }).eql({ foo: [1] });
+
+        assert.throws(() => {
+          expect({ foo: [1] }).eql({ foo: [1, 2] });
+        });
+      });
     });
   });
 
