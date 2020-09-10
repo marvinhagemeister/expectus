@@ -332,6 +332,11 @@ describe("Assertion", () => {
         expect({ foo: 1 }).property("foo").a("number");
       });
     });
+
+    it("supports constructors", () => {
+      class Foo {}
+      expect(new Foo()).a("Foo");
+    });
   });
 
   describe(".haveOwnProperty()", () => {

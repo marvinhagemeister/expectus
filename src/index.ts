@@ -28,15 +28,6 @@ class AssertionError extends Error {
   }
 }
 
-export type ValueType =
-  | "string"
-  | "number"
-  | "boolean"
-  | "bigint"
-  | "function"
-  | "object"
-  | "array";
-
 class Assertion<T> {
   private _deep = false;
   private _invert = false;
@@ -294,8 +285,19 @@ class Assertion<T> {
     return new Assertion((actual as any)[name]);
   }
 
-  a(expected: ValueType) {
-    const actual = Array.isArray(this.actual) ? "array" : typeof this.actual;
+  a(expected: string) {
+    let actual: string = typeof this.actual;
+    if (Array.isArray(this.actual)) {
+      actual = "array";
+    } else if (
+      this.actual !== null &&
+      actual === "object" &&
+      (this.actual as any).constructor &&
+      (this.actual as any).constructor.name !== "Object"
+    ) {
+      actual = (this.actual as any).constructor.name;
+    }
+
     this.assert({
       result: actual === expected,
       actual,
@@ -307,7 +309,7 @@ class Assertion<T> {
     return this;
   }
 
-  an(expected: ValueType) {
+  an(expected: string) {
     return this.a(expected);
   }
 
