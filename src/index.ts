@@ -252,24 +252,33 @@ class Assertion<T> {
     return this;
   }
 
-  property(name: string, value?: any) {
-    const actual = this._nestedProperty
-      ? name
-          .split(/[.[\]]/)
-          .filter(Boolean)
-          .reduce((acc, key, i, arr) => {
-            // Break out early to support 'in' operator later
-            if (i + 1 === arr.length) {
-              name = key;
-              return acc;
-            }
-            return (acc as any)[key];
-          }, this.actual)
-      : this.actual;
+  property(name: string, value?: any): Assertion<any> {
+    let actual;
+    try {
+      actual = this._nestedProperty
+        ? name
+            .split(/[.[\]]/)
+            .filter(Boolean)
+            .reduce((acc, key, i, arr) => {
+              // Break out early to support 'in' operator later
+              if (i + 1 === arr.length) {
+                name = key;
+                return acc;
+              }
+              return (acc as any)[key];
+            }, this.actual)
+        : this.actual;
+    } catch (e) {
+      // Ignore
+    }
 
     if (arguments.length > 1) {
       this.assert({
-        result: name in actual && (actual as any)[name] === value,
+        result:
+          actual != null &&
+          typeof actual === "object" &&
+          name in actual &&
+          (actual as any)[name] === value,
         message: `Expected #{this} to have a property ${name} with the value #{exp}.`,
         messageNot: `Expected #{this} not to have a property ${name} with the value #{exp}.`,
         actual: (actual as any)[name],
@@ -277,12 +286,13 @@ class Assertion<T> {
       });
     } else {
       this.assert({
-        result: name in actual,
+        result: actual != null && typeof actual === "object" && name in actual,
         message: `Expected #{this} to have a property ${name}`,
         messageNot: `Expected #{this} not to have a property ${name}`,
       });
     }
-    return new Assertion((actual as any)[name]);
+
+    return new Assertion(actual ? (actual as any)[name] : actual);
   }
 
   a(expected: string) {

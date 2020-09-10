@@ -426,6 +426,15 @@ describe("Assertion", () => {
         expect({ foo: [{ bar: 1 }] }).nested.property("foo[0].bar", 1);
       });
     });
+
+    it("supports chaining", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: { bar: undefined } })
+          .property("foo")
+          .property("bar")
+          .not.property("bob");
+      });
+    });
   });
 
   describe.skip(".keys()", () => {
