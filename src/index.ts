@@ -281,7 +281,7 @@ class Assertion<T> {
     return this.a(expected);
   }
 
-  hasOwnProperty(name: string) {
+  haveOwnProperty(name: string) {
     this.assert({
       result: (this.actual as any).hasOwnProperty(name),
       expected: name,

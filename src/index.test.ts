@@ -322,30 +322,30 @@ describe("Assertion", () => {
     });
   });
 
-  describe(".hasOwnProperty()", () => {
-    it("supports .hasOwnProperty()", () => {
+  describe(".haveOwnProperty()", () => {
+    it("supports .haveOwnProperty()", () => {
       assert.throws(() => {
-        expect(null).hasOwnProperty("numberfoo");
+        expect(null).haveOwnProperty("numberfoo");
       });
       assert.throws(() => {
-        expect({}).hasOwnProperty("foo");
+        expect({}).haveOwnProperty("foo");
       });
 
       assert.doesNotThrow(() => {
-        expect({ foo: 1 }).hasOwnProperty("foo");
+        expect({ foo: 1 }).haveOwnProperty("foo");
       });
     });
 
-    it("supports .not.hasOwnProperty()", () => {
+    it("supports .not.haveOwnProperty()", () => {
       assert.throws(() => {
-        expect(null).not.hasOwnProperty("numberfoo");
+        expect(null).not.haveOwnProperty("numberfoo");
       });
       assert.doesNotThrow(() => {
-        expect({}).not.hasOwnProperty("foo");
+        expect({}).not.haveOwnProperty("foo");
       });
 
       assert.throws(() => {
-        expect({ foo: 1 }).not.hasOwnProperty("foo");
+        expect({ foo: 1 }).not.haveOwnProperty("foo");
       });
     });
   });
