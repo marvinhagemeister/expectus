@@ -84,6 +84,10 @@ class Assertion<T> {
     return this;
   }
 
+  get does() {
+    return this;
+  }
+
   get deep() {
     this._deep = true;
     return this;

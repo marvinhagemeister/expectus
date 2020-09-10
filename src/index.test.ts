@@ -1043,6 +1043,14 @@ describe("Assertion", () => {
         expect(true).with.equal(false);
       });
     });
+
+    it("supports .does", () => {
+      expect(true).does.equal(true);
+
+      assert.throws(() => {
+        expect(true).does.equal(false);
+      });
+    });
   });
 
   it("should support messages", () => {
