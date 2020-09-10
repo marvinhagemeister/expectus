@@ -367,8 +367,8 @@ class Assertion<T> {
       result: actual !== expected,
       actual,
       expected,
-      message: `${prefix}Expected #{act} to have a length of #{exp}`,
-      messageNot: `${prefix}Expected #{act} not to have a length of #{exp}`,
+      message: `${prefix}Expected #{this} to have a length of #{exp}, but got #{act} instead.`,
+      messageNot: `${prefix}Expected #{this} not to have a length of #{exp}, but got #{act} instead.`,
     });
     return this;
   }
@@ -487,9 +487,9 @@ class Assertion<T> {
     let { result, actual, expected, message, messageNot } = options;
     if ((result && !this._invert) || (!result && this._invert)) {
       message = (this._invert ? messageNot : message)
-        .replace(/\{\#this\}/g, formatType(this.actual))
-        .replace(/\{\#exp\}/g, formatType(expected))
-        .replace(/\{\#act\}/g, formatType(actual));
+        .replace(/\#\{this\}/g, formatType(this.actual))
+        .replace(/\#\{exp\}/g, formatType(expected))
+        .replace(/\#\{act\}/g, formatType(actual));
       throw new AssertionError(message, actual, expected);
     }
   }

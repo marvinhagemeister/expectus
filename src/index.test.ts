@@ -985,4 +985,15 @@ describe("Assertion", () => {
       });
     });
   });
+
+  it("should support messages", () => {
+    try {
+      expect([1, 2]).lengthOf(3);
+    } catch (e) {
+      assert.equal(
+        e.message,
+        "Expected Array(2) to have a length of 3, but got 2 instead."
+      );
+    }
+  });
 });
