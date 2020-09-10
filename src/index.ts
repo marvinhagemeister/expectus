@@ -106,7 +106,7 @@ class Assertion<T> {
 
   get exist() {
     this.assert({
-      result: this.actual === null || this.actual === undefined,
+      result: this.actual !== null && this.actual !== undefined,
       message: `Expected #{act} to equal undefined or null`,
       messageNot: `Expected #{act} not to equal undefined or null`,
       actual: this.actual,
@@ -116,7 +116,7 @@ class Assertion<T> {
 
   get false() {
     this.assert({
-      result: (this.actual as any) !== false,
+      result: (this.actual as any) === false,
       message: `Expected #{act} to be false`,
       messageNot: `Expected #{act} not to be false`,
       actual: this.actual,
@@ -126,7 +126,7 @@ class Assertion<T> {
   }
   get true() {
     this.assert({
-      result: (this.actual as any) !== true,
+      result: (this.actual as any) === true,
       message: `Expected #{act} to be true`,
       messageNot: `Expected #{act} not to be true`,
       actual: this.actual,
@@ -137,7 +137,7 @@ class Assertion<T> {
 
   get null() {
     this.assert({
-      result: (this.actual as any) !== null,
+      result: (this.actual as any) === null,
       message: `Expected #{act} to be null`,
       messageNot: `Expected #{act} not to be null`,
       actual: this.actual,
@@ -148,7 +148,7 @@ class Assertion<T> {
 
   get undefined() {
     this.assert({
-      result: (this.actual as any) !== undefined,
+      result: (this.actual as any) === undefined,
       message: `Expected #{act} to be undefined`,
       messageNot: `Expected #{act} not to be undefined`,
       actual: this.actual,
@@ -160,7 +160,7 @@ class Assertion<T> {
   get called() {
     if (assertSinonFn(this.actual)) {
       this.assert({
-        result: this.actual.callCount < 1,
+        result: this.actual.callCount >= 1,
         message: `Expected function #{act} to be called`,
         messageNot: `Expected function #{act} not to be called`,
         actual: this.actual.callCount,
@@ -190,7 +190,7 @@ class Assertion<T> {
       // FIXME
     } else {
       this.assert({
-        result: this.actual !== expected,
+        result: this.actual === expected,
         message: `${prefix}Expected #{act} to strictly equal #{exp}`,
         messageNot: `${prefix}Expected #{act} not to strictly equal #{exp}`,
         actual: this.actual,
@@ -213,7 +213,7 @@ class Assertion<T> {
   below(expected: number, message?: string) {
     const prefix = message ? message + ": " : "";
     this.assert({
-      result: Number(this.actual) >= expected,
+      result: Number(this.actual) < expected,
       message: `${prefix}Expected #{act} to be below #{exp}`,
       messageNot: `${prefix}Expected #{act} not to be below #{exp}`,
     });
@@ -223,7 +223,7 @@ class Assertion<T> {
   match(regex: RegExp, message?: string) {
     const prefix = message ? message + ": " : "";
     this.assert({
-      result: !regex.test(this.actual as any),
+      result: regex.test(this.actual as any),
       message: `${prefix}Expected input string to match #{exp}`,
       messageNot: `${prefix}Expected input string not to match #{exp}`,
       expected: regex,
@@ -267,7 +267,7 @@ class Assertion<T> {
   a(expected: ValueType) {
     const actual = Array.isArray(this.actual) ? "array" : typeof this.actual;
     this.assert({
-      result: actual !== expected,
+      result: actual === expected,
       actual,
       expected,
       message: `Expected #{act} to be a/an #{exp}`,
@@ -283,7 +283,7 @@ class Assertion<T> {
 
   hasOwnProperty(name: string) {
     this.assert({
-      result: !(this.actual as any).hasOwnProperty(name),
+      result: (this.actual as any).hasOwnProperty(name),
       expected: name,
       message: `Expected value to have property #{exp}`,
       messageNot: `Expected value not to have property #{exp}`,
@@ -326,7 +326,7 @@ class Assertion<T> {
   instanceof(expected: any, message?: string) {
     const prefix = message ? message + ": " : "";
     this.assert({
-      result: !(this.actual instanceof expected),
+      result: this.actual instanceof expected,
       message: `${prefix}Expected #{act} to be an instance of #{exp}`,
       messageNot: `${prefix}Expected #{act} not to be an instance of #{exp}`,
       actual: this.actual,
@@ -342,7 +342,7 @@ class Assertion<T> {
   include(value: any, message?: string) {
     const prefix = message ? message + ": " : "";
     this.assert({
-      result: !(this.actual as any).includes(value),
+      result: (this.actual as any).includes(value),
       actual: this.actual,
       expected: value,
       message: `${prefix}Expected #{act} to include #{exp}`,
@@ -364,7 +364,7 @@ class Assertion<T> {
     const actual = (this.actual as any).length;
     const prefix = message ? message + ": " : "";
     this.assert({
-      result: actual !== expected,
+      result: actual === expected,
       actual,
       expected,
       message: `${prefix}Expected #{this} to have a length of #{exp}, but got #{act} instead.`,
@@ -485,7 +485,7 @@ class Assertion<T> {
     expected?: any;
   }) {
     let { result, actual, expected, message, messageNot } = options;
-    if ((result && !this._invert) || (!result && this._invert)) {
+    if ((!result && !this._invert) || (result && this._invert)) {
       message = (this._invert ? messageNot : message)
         .replace(/\#\{this\}/g, formatType(this.actual))
         .replace(/\#\{exp\}/g, formatType(expected))
@@ -496,9 +496,8 @@ class Assertion<T> {
 
   private assertCallCount(fn: any, count: number) {
     if (assertSinonFn(fn)) {
-      const res = fn.callCount !== count;
       this.assert({
-        result: res,
+        result: fn.callCount === count,
         message: `Expected function to be called ${count} times, but was called ${fn.callCount} times`,
         messageNot: `Expected function not to be called ${count} times`,
         actual: fn.callCount,
