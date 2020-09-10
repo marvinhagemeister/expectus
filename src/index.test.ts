@@ -42,7 +42,7 @@ describe("Assertion", () => {
       });
     });
 
-    describe.skip(".deep", () => {
+    describe(".deep", () => {
       it("supports objects", () => {
         assert.doesNotThrow(() => {
           expect({ a: 1 }).deep.equal({ a: 1 });

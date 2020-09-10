@@ -1,9 +1,9 @@
 import { SinonSpy } from "sinon";
+import { deepEqual } from "./deep";
 import { formatType, printDiff } from "./print";
 
 // FIXME: .equalNode()
 // FIXME: .throw(RegExp)
-// FIXME: deep equality
 // FIXME: reset flags
 
 function isSinonFn(x: any): x is SinonSpy {
@@ -189,7 +189,13 @@ class Assertion<T> {
   equal(expected: T, message?: string) {
     const prefix = message ? message + ": " : "";
     if (this._deep) {
-      // FIXME
+      this.assert({
+        result: deepEqual(this.actual, expected),
+        message: `${prefix}Expected #{act} to deeply equal #{exp}`,
+        messageNot: `${prefix}Expected #{act} not to deeply equal #{exp}`,
+        actual: this.actual,
+        expected,
+      });
     } else {
       this.assert({
         result: this.actual === expected,
