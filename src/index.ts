@@ -414,44 +414,54 @@ class Assertion<T> {
   }
 
   calledWith(...params: any[]) {
-    if (assertSinonFn(this.actual)) {
-      const res = !this.actual.calledWith(...params);
-      if ((res && !this._invert) || (!res && this._invert)) {
-        throw new Error("fail");
-      }
-    }
-
+    this.assert({
+      result: (this.actual as any).calledWith(...params),
+      message:
+        "Expected function to be called with #{exp}, but was called with #{act}.",
+      messageNot:
+        "Expected function not to be called with #{exp}, but was called with #{act}.",
+      actual: [], // FIXME
+      expected: params,
+    });
     return this;
   }
 
   calledWithExactly(...params: any[]) {
-    if (assertSinonFn(this.actual)) {
-      const res = this.actual.calledWithExactly(...params);
-      if ((res && !this._invert) || (!res && this._invert)) {
-        throw new Error("fail");
-      }
-    }
+    this.assert({
+      result: (this.actual as any).calledWithExactly(...params),
+      message:
+        "Expected function to be called with exactly #{exp}, but was called with #{act}.",
+      messageNot:
+        "Expected function not to be called with exactly #{exp}, but was called with #{act}.",
+      actual: [], // FIXME
+      expected: params,
+    });
     return this;
   }
 
   calledWithMatch(...params: any[]) {
-    if (assertSinonFn(this.actual)) {
-      const res = !this.actual.calledWithMatch(...params);
-      if ((res && !this._invert) || (!res && this._invert)) {
-        throw new Error("fail");
-      }
-    }
-
+    this.assert({
+      result: (this.actual as any).calledWithMatch(...params),
+      message:
+        "Expected function to be called with match #{exp}, but was called with #{act}.",
+      messageNot:
+        "Expected function not to be called with match #{exp}, but was called with #{act}.",
+      actual: [], // FIXME
+      expected: params,
+    });
     return this;
   }
 
   calledOnceWith(...params: any[]) {
-    if (assertSinonFn(this.actual)) {
-      const res = !this.actual.calledOnceWith(...params);
-      if ((res && !this._invert) || (!res && this._invert)) {
-        throw new Error("fail");
-      }
-    }
+    this.assert({
+      result: (this.actual as any).calledWithMatch(...params),
+      message:
+        "Expected function to be called once with #{exp}, but was called with #{act}.",
+      messageNot:
+        "Expected function not to be called once with #{exp}, but was called with #{act}.",
+      actual: [], // FIXME
+      expected: params,
+    });
 
     return this;
   }
@@ -468,13 +478,18 @@ class Assertion<T> {
   }
 
   returned(value: any) {
-    if (assertSinonFn(this.actual)) {
-      const res = !this.actual.returned(value);
-      if ((res && !this._invert) || (!res && this._invert)) {
-        throw new Error("fail");
-      }
-    }
-
+    this.assert({
+      result: (this.actual as any).returned(value),
+      message:
+        "Expected function to have returned #{exp}, but returned #{act} instead.",
+      messageNot: "Expected function to not have returned #{exp}.",
+      actual: (this.actual as any).returnValues
+        ? (this.actual as any).returnValues[
+            (this.actual as any).returnValues.length - 1
+          ]
+        : (this.actual as any).returnValue,
+      expected: value,
+    });
     return this;
   }
 
