@@ -320,6 +320,12 @@ describe("Assertion", () => {
         expect([]).a("array");
       });
     });
+
+    it("works with .property", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: 1 }).property("foo").a("number");
+      });
+    });
   });
 
   describe(".haveOwnProperty()", () => {
