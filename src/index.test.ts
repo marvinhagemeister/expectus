@@ -44,7 +44,7 @@ describe("Assertion", () => {
       });
     });
 
-    describe(".deep", () => {
+    describe.skip(".deep", () => {
       it("supports objects", () => {
         assert.doesNotThrow(() => {
           expect({ a: 1 }).deep.equal({ a: 1 });
@@ -79,7 +79,7 @@ describe("Assertion", () => {
     });
   });
 
-  describe(".throw", () => {
+  describe.skip(".throw", () => {
     it("supports .throw", () => {
       assert.throws(() => {
         expect(true).throw();
@@ -380,7 +380,7 @@ describe("Assertion", () => {
     // FIXME: not
   });
 
-  describe(".keys()", () => {
+  describe.skip(".keys()", () => {
     it("supports .keys()", () => {
       assert.throws(() => {
         expect(false).keys(["1"]);
