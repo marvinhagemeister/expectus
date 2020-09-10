@@ -9,7 +9,8 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha -r ts-node/register --extensions ts --watch-files src src/**/*.test.ts",
-    "build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json"
+    "build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+    "prepublishOnly": "npm test && npm run build"
   },
   "dependencies": {
     "sinon": "^9.0.3"
