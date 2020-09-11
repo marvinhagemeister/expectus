@@ -287,7 +287,9 @@ class Assertion<T> {
           actual != null &&
           typeof actual === "object" &&
           name in actual &&
-          (actual as any)[name] === value,
+          this._deep
+            ? deepEqual((actual as any)[name], value)
+            : (actual as any)[name] === value,
         message: `Expected #{this} to have a property ${name} with the value #{exp}.`,
         messageNot: `Expected #{this} not to have a property ${name} with the value #{exp}.`,
         actual: (actual as any)[name],

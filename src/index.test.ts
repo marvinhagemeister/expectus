@@ -435,6 +435,14 @@ describe("Assertion", () => {
           .not.property("bob");
       });
     });
+
+    it("supports deep equality", () => {
+      assert.doesNotThrow(() => {
+        expect({ foo: { bar: undefined } }).deep.property("foo", {
+          bar: undefined,
+        });
+      });
+    });
   });
 
   describe.skip(".keys()", () => {
