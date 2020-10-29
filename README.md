@@ -1,5 +1,7 @@
 # Expectus
 
+**This is a prototype and not recommended to be used in production yet**
+
 A chai.js inspired testing assertion library for the browser and node.
 
 ## Usage
