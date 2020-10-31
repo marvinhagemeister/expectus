@@ -1,47 +1,51 @@
 {
-  "name": "expectus",
-  "version": "0.2.0",
-  "description": "A testing assertion library inspired by chai.js",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
-  "author": "Marvin Hagemeister <hello@marvinh.dev>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marvinhagemeister/expectus.git"
-  },
-  "license": "MIT",
-  "scripts": {
-    "test": "mocha -r ts-node/register --extensions ts --watch-files src src/**/*.test.ts",
-    "build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "prepublishOnly": "npm test && npm run build"
-  },
-  "files": [
-    "dist/"
-  ],
-  "dependencies": {
-    "sinon": "^9.0.3"
-  },
-  "devDependencies": {
-    "@types/mocha": "^8.0.3",
-    "@types/node": "^14.6.4",
-    "@types/sinon": "^9.0.5",
-    "husky": "^4.3.0",
-    "lint-staged": "^10.3.0",
-    "mocha": "^8.1.3",
-    "prettier": "^2.1.1",
-    "rimraf": "^3.0.2",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,yml,md,json}": [
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  }
+	"name": "expectus",
+	"version": "0.2.0",
+	"description": "A testing assertion library inspired by chai.js",
+	"main": "dist/cjs/index.js",
+	"module": "dist/esm/index.js",
+	"types": "dist/types/index.d.ts",
+	"author": "Marvin Hagemeister <hello@marvinh.dev>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marvinhagemeister/expectus.git"
+	},
+	"license": "MIT",
+	"scripts": {
+		"test": "mocha -r ts-node/register --extensions ts --watch-files src src/**/*.test.ts",
+		"build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+		"prepublishOnly": "npm test && npm run build"
+	},
+	"files": [
+		"dist/"
+	],
+	"dependencies": {
+		"sinon": "^9.0.3"
+	},
+	"devDependencies": {
+		"@types/mocha": "^8.0.3",
+		"@types/node": "^14.6.4",
+		"@types/sinon": "^9.0.5",
+		"husky": "^4.3.0",
+		"lint-staged": "^10.3.0",
+		"mocha": "^8.1.3",
+		"prettier": "^2.1.1",
+		"rimraf": "^3.0.2",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.2"
+	},
+	"lint-staged": {
+		"**/*.{js,jsx,ts,tsx,yml,md,json}": [
+			"prettier --write"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"prettier": {
+		"arrowParens": "avoid",
+		"useTabs": true
+	}
 }
