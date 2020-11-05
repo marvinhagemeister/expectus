@@ -5,6 +5,22 @@
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
 	"types": "dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/esm/index.mjs",
+			"require": "./dist/cjs/index.js"
+		},
+		"./chai": {
+			"import": "./dist/esm/chai/index.mjs",
+			"require": "./dist/cjs/chai/index.js"
+		},
+		"./jest": {
+			"import": "./dist/esm/jest/index.mjs",
+			"require": "./dist/cjs/jest/index.js"
+		},
+		"./package.json": "./package.json",
+		"./": "./"
+	},
 	"author": "Marvin Hagemeister <hello@marvinh.dev>",
 	"repository": {
 		"type": "git",
@@ -13,7 +29,8 @@
 	"license": "MIT",
 	"scripts": {
 		"test": "mocha -r ts-node/register --extensions ts --watch-files src src/**/*.test.ts",
-		"build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+		"build": "rimraf dist/ && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && npm run fix-mjs && check-export-map",
+		"fix-mjs": "find ./dist/esm/ -name '*.js' -exec rename .js .mjs {} +",
 		"prepublishOnly": "npm test && npm run build"
 	},
 	"files": [
@@ -26,6 +43,7 @@
 		"@types/mocha": "^8.0.3",
 		"@types/node": "^14.6.4",
 		"@types/sinon": "^9.0.5",
+		"check-export-map": "^1.0.1",
 		"husky": "^4.3.0",
 		"lint-staged": "^10.3.0",
 		"mocha": "^8.1.3",

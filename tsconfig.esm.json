@@ -5,7 +5,8 @@
 		"target": "ES2017",
 		"outDir": "dist/esm/",
 		"declaration": true,
-		"declarationDir": "dist/types/"
+		"declarationDir": "dist/types/",
+		"sourceMap": true
 	},
-	"files": ["./src/index.ts"]
+	"files": ["./src/index.ts", "./src/chai/index.ts", "./src/jest/index.ts"]
 }
