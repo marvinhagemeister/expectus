@@ -1,5 +1,14 @@
 import { Assertion, assertSinonFn, isSinonFn } from "./assert";
-import { isNull } from "./shared";
+import {
+	doesInclude,
+	doesIncludeShape,
+	doesThrow,
+	isAssertNaN,
+	isDeepEqual,
+	isMatch,
+	isNull,
+	isUndefined,
+} from "./shared";
 
 function notImplemented() {
 	return new Error("Not implemented yet");
@@ -7,6 +16,7 @@ function notImplemented() {
 
 class JestAssertion<T> {
 	protected assertion: Assertion<T>;
+	protected invert = false;
 	constructor(public actual: T) {
 		this.assertion = new Assertion(actual);
 	}
@@ -58,24 +68,45 @@ class JestAssertion<T> {
 	toBeInstanceOf() {}
 
 	toBeNull() {
-		isNull(this.actual);
+		isNull(this.actual, { invert: this.invert });
 	}
 
 	toBeTruthy() {}
-	toBeUndefined() {}
-	toBeNaN() {}
-	toContain() {}
-	toContainEqual() {}
+
+	toBeUndefined() {
+		isUndefined(this.actual, { invert: this.invert });
+	}
+
+	toBeNaN() {
+		isAssertNaN(this.actual as any, { invert: this.invert });
+	}
+
+	toContain(value: any) {
+		doesInclude(this.actual, value, { invert: this.invert });
+	}
+
+	toContainEqual(value: any) {
+		doesIncludeShape(this.actual, value, { invert: this.invert });
+	}
+
 	toEqual(expected: T) {
-		this.assertion.equal(expected);
+		isDeepEqual(this.actual, expected, { invert: this.invert });
 	}
 
 	toMatch(regex: RegExp) {
-		this.assertion.matches(regex);
+		isMatch(this.actual as any, regex, { invert: this.invert });
 	}
+
 	toMatchObject() {}
 	toStrictEqual() {}
-	toThrow() {}
+
+	toThrow(err?: RegExp | string | Error) {
+		doesThrow(this.actual as any, err, { invert: this.invert });
+	}
+
+	toThrowError(err?: RegExp | string | Error) {
+		this.toThrow(err);
+	}
 }
 
 export function expect<T>(actual: T) {
