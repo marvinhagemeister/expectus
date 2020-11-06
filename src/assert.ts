@@ -1,6 +1,6 @@
 import { SinonSpy } from "sinon";
-import { deepEqual } from "./deep";
 import { formatType, printDiff } from "./print";
+import { AssertionError, objectIs, isEqual, isDeepEqual } from "./shared";
 
 // FIXME: .equalNode()
 // FIXME: .throw(RegExp)
@@ -15,19 +15,6 @@ export function assertSinonFn(x: any): x is SinonSpy {
 		throw new Error("Not a spy function");
 	}
 	return true;
-}
-
-const noArg = "__no_argument__";
-
-export class AssertionError extends Error {
-	constructor(
-		public message: string,
-		public actual: any = noArg,
-		public expected: any = noArg,
-		public showDiff = actual !== noArg && expected !== noArg
-	) {
-		super(message);
-	}
 }
 
 export class Assertion<T> {
@@ -64,21 +51,9 @@ export class Assertion<T> {
 	equal(expected: T, message?: string) {
 		const prefix = message ? message + ": " : "";
 		if (this._deep) {
-			this._assert({
-				result: deepEqual(this.actual, expected),
-				message: `${prefix}Expected #{act} to deeply equal #{exp}`,
-				messageNot: `${prefix}Expected #{act} not to deeply equal #{exp}`,
-				actual: this.actual,
-				expected,
-			});
+			isDeepEqual(this.actual, expected);
 		} else {
-			this._assert({
-				result: this.actual === expected,
-				message: `${prefix}Expected #{act} to strictly equal #{exp}`,
-				messageNot: `${prefix}Expected #{act} not to strictly equal #{exp}`,
-				actual: this.actual,
-				expected,
-			});
+			isEqual(this.actual, expected, message);
 		}
 
 		return this;
@@ -278,13 +253,7 @@ export class Assertion<T> {
 	}
 
 	is(expected: T, message?: string) {
-		this._assert({
-			result: Object.is(this.actual, expected),
-			message: `Expeced #{act} to equal #{exp} via Object.is equality`,
-			messageNot: `Expected #{act} not to equal #{exp} via Object.is equality`,
-			actual: this.actual,
-			expected,
-		});
+		objectIs(this.actual, expected, message);
 	}
 
 	_assert(options: {

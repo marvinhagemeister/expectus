@@ -1,7 +1,8 @@
 import { SinonSpy } from "sinon";
-import { Assertion, AssertionError, assertSinonFn } from "./assert";
+import { Assertion, assertSinonFn } from "./assert";
 import { deepEqual } from "./deep";
 import { printDiff } from "./print";
+import { isFalse, isNull, AssertionError } from "./shared";
 
 function notImplemented() {
 	return new Error("Not implemented yet");
@@ -165,24 +166,12 @@ class ChaiAssertion<T> {
 	}
 
 	get false() {
-		this.assertion._assert({
-			result: (this.actual as any) === false,
-			message: `Expected #{act} to be false`,
-			messageNot: `Expected #{act} not to be false`,
-			actual: this.actual,
-			expected: false,
-		});
+		isFalse(this.actual);
 		return this;
 	}
 
 	get null() {
-		this.assertion._assert({
-			result: (this.actual as any) === null,
-			message: `Expected #{act} to be null`,
-			messageNot: `Expected #{act} not to be null`,
-			actual: this.actual,
-			expected: null,
-		});
+		isNull(this.actual);
 		return this;
 	}
 

@@ -1,8 +1,13 @@
-import { Assertion } from "./assert";
+import { Assertion, assertSinonFn, isSinonFn } from "./assert";
+import { isNull } from "./shared";
+
+function notImplemented() {
+	return new Error("Not implemented yet");
+}
 
 class JestAssertion<T> {
 	protected assertion: Assertion<T>;
-	constructor(actual: T) {
+	constructor(public actual: T) {
 		this.assertion = new Assertion(actual);
 	}
 
@@ -23,11 +28,15 @@ class JestAssertion<T> {
 	}
 
 	toHaveBeenLastCalledWith(...args: any[]) {
-		this.assertion.call(...args);
+		if (assertSinonFn(this.actual)) {
+			// this.assertion.call(...args);
+		}
+		throw notImplemented();
 	}
 
 	toHaveBeenNthCalledWith(nth: number, ...args: any[]) {
-		this.assertion.call(...args);
+		// this.assertion.call(...args);
+		throw notImplemented();
 	}
 
 	toHaveReturned() {}
@@ -47,7 +56,11 @@ class JestAssertion<T> {
 	toBeLessThan() {}
 	toBeLessThanOrEqual() {}
 	toBeInstanceOf() {}
-	toBeNull() {}
+
+	toBeNull() {
+		isNull(this.actual);
+	}
+
 	toBeTruthy() {}
 	toBeUndefined() {}
 	toBeNaN() {}
