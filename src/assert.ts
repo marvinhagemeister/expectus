@@ -1,6 +1,6 @@
 import { SinonSpy } from "sinon";
-import { formatType, printDiff } from "./print";
-import { AssertionError, objectIs, isEqual, isDeepEqual } from "./shared";
+import { formatType } from "./print";
+import { AssertionError } from "./shared";
 
 // FIXME: .equalNode()
 // FIXME: .throw(RegExp)
@@ -49,12 +49,12 @@ export class Assertion<T> {
 	}
 
 	equal(expected: T, message?: string) {
-		const prefix = message ? message + ": " : "";
-		if (this._deep) {
-			isDeepEqual(this.actual, expected);
-		} else {
-			isEqual(this.actual, expected, message);
-		}
+		// const prefix = message ? message + ": " : "";
+		// if (this._deep) {
+		// 	isDeepEqual(this.actual, expected);
+		// } else {
+		// 	isEqual(this.actual, expected, message);
+		// }
 
 		return this;
 	}
@@ -253,7 +253,7 @@ export class Assertion<T> {
 	}
 
 	is(expected: T, message?: string) {
-		objectIs(this.actual, expected, message);
+		// objectIs(this.actual, expected, message);
 	}
 
 	_assert(options: {

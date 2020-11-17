@@ -2,7 +2,7 @@ import { SinonSpy } from "sinon";
 import { Assertion, assertSinonFn } from "./assert";
 import { deepEqual } from "./deep";
 import { printDiff } from "./print";
-import { isFalse, isNull, AssertionError } from "./shared";
+import { isPrimitive, AssertionError } from "./shared";
 
 function notImplemented() {
 	return new Error("Not implemented yet");
@@ -165,15 +165,15 @@ class ChaiAssertion<T> {
 		return this;
 	}
 
-	get false() {
-		isFalse(this.actual);
-		return this;
-	}
+	// get false() {
+	// 	isFalse(this.actual);
+	// 	return this;
+	// }
 
-	get null() {
-		isNull(this.actual);
-		return this;
-	}
+	// get null() {
+	// 	isNull(this.actual);
+	// 	return this;
+	// }
 
 	get undefined() {
 		this.assertion._assert({
@@ -244,25 +244,25 @@ class ChaiAssertion<T> {
 		return this.equal(expected, message);
 	}
 
-	above(expected: T, message?: string) {
-		this.assertion.greater(expected, message);
-		return this;
-	}
+	// above(expected: T, message?: string) {
+	// 	this.assertion.greater(expected, message);
+	// 	return this;
+	// }
 
-	least(expected: T, message?: string) {
-		this.assertion.greaterOrEqual(expected, message);
-		return this;
-	}
+	// least(expected: T, message?: string) {
+	// 	this.assertion.greaterOrEqual(expected, message);
+	// 	return this;
+	// }
 
-	below(expected: T, message?: string) {
-		this.assertion.lower(expected, message);
-		return this;
-	}
+	// below(expected: T, message?: string) {
+	// 	this.assertion.lower(expected, message);
+	// 	return this;
+	// }
 
-	most(expected: T, message?: string) {
-		this.assertion.lowerOrEqual(expected, message);
-		return this;
-	}
+	// most(expected: T, message?: string) {
+	// 	this.assertion.lowerOrEqual(expected, message);
+	// 	return this;
+	// }
 
 	within(start: number, finish: number, message?: string) {
 		throw notImplemented();

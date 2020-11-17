@@ -1,46 +1,45 @@
-import { Assertion, assertSinonFn, isSinonFn } from "./assert";
 import {
 	doesInclude,
 	doesIncludeShape,
 	doesThrow,
-	isAssertNaN,
 	isDeepEqual,
+	isFalsy,
+	isGreaterThan,
+	isGreaterThanOrEqual,
+	isInstanceOf,
+	isLessThan,
+	isLessThanOrEqual,
 	isMatch,
-	isNull,
-	isUndefined,
+	isPrimitive,
+	isTruthy,
 } from "./shared";
+import { isCalled, isCalledTimes } from "./sinon";
 
 function notImplemented() {
 	return new Error("Not implemented yet");
 }
 
 class JestAssertion<T> {
-	protected assertion: Assertion<T>;
 	protected invert = false;
-	constructor(public actual: T) {
-		this.assertion = new Assertion(actual);
-	}
+	constructor(public actual: T) {}
 
 	toBe(expected: T) {
-		this.assertion.is(expected);
+		isPrimitive(this.actual, expected, { invert: this.invert });
 	}
 
 	toHaveBeenCalled() {
-		this.assertion.called();
+		isCalled(this.actual as any, undefined, { invert: this.invert });
 	}
 
 	toHaveBeenCalledTimes(count: number) {
-		this.assertion.calledTimes(count);
+		isCalledTimes(this.actual as any, count, { invert: this.invert });
 	}
 
 	toHaveBeenCalledWith(...args: any[]) {
-		this.assertion.calledWith(...args);
+		// this.assertion.calledWith(...args);
 	}
 
 	toHaveBeenLastCalledWith(...args: any[]) {
-		if (assertSinonFn(this.actual)) {
-			// this.assertion.call(...args);
-		}
 		throw notImplemented();
 	}
 
@@ -59,30 +58,53 @@ class JestAssertion<T> {
 	toHaveLength() {}
 	toHaveProperty() {}
 	toBeCloseTo() {}
-	toBeDefined() {}
-	toBeFalsy() {}
-	toBeGreaterThan() {}
-	toBeGreaterThanOrEqual() {}
-	toBeLessThan() {}
-	toBeLessThanOrEqual() {}
-	toBeInstanceOf() {}
 
-	toBeNull() {
-		isNull(this.actual, { invert: this.invert });
+	toBeDefined() {
+		isPrimitive(this.actual, undefined, { invert: !this.invert });
 	}
 
-	toBeTruthy() {}
+	toBeFalsy() {
+		isFalsy(this.actual, undefined, { invert: this.invert });
+	}
+
+	toBeGreaterThan(expected: number) {
+		isGreaterThan(this.actual as any, expected, { invert: this.invert });
+	}
+
+	toBeGreaterThanOrEqual(expected: number) {
+		isGreaterThanOrEqual(this.actual as any, expected, { invert: this.invert });
+	}
+
+	toBeLessThan(expected: number) {
+		isLessThan(this.actual as any, expected, { invert: this.invert });
+	}
+
+	toBeLessThanOrEqual(expected: number) {
+		isLessThanOrEqual(this.actual as any, expected, { invert: this.invert });
+	}
+
+	toBeInstanceOf(expected: any) {
+		isInstanceOf(this.actual, expected);
+	}
+
+	toBeNull() {
+		isPrimitive(this.actual, null, { invert: this.invert });
+	}
+
+	toBeTruthy() {
+		isTruthy(this.actual, undefined, { invert: this.invert });
+	}
 
 	toBeUndefined() {
-		isUndefined(this.actual, { invert: this.invert });
+		isPrimitive(this.actual, undefined, { invert: this.invert });
 	}
 
 	toBeNaN() {
-		isAssertNaN(this.actual as any, { invert: this.invert });
+		isPrimitive(this.actual, NaN, { invert: this.invert });
 	}
 
 	toContain(value: any) {
-		doesInclude(this.actual, value, { invert: this.invert });
+		doesInclude(this.actual as any, value, { invert: this.invert });
 	}
 
 	toContainEqual(value: any) {
@@ -100,11 +122,11 @@ class JestAssertion<T> {
 	toMatchObject() {}
 	toStrictEqual() {}
 
-	toThrow(err?: RegExp | string | Error) {
+	toThrow(err?: RegExp | string | ErrorConstructor) {
 		doesThrow(this.actual as any, err, { invert: this.invert });
 	}
 
-	toThrowError(err?: RegExp | string | Error) {
+	toThrowError(err?: RegExp | string | ErrorConstructor) {
 		this.toThrow(err);
 	}
 }
