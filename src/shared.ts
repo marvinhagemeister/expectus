@@ -108,7 +108,7 @@ export const isInstanceOf = createAssertion<any, any>({
 });
 
 export const hasLength = createAssertion<any, number>({
-	message: `Expected #{act} to be have length #{exp}`,
+	message: `Expected #{act} to have length #{exp}`,
 	messageNot: `Expected #{act} not to have length #{exp}`,
 	getActual: actual =>
 		typeof actual === "object" && actual !== null ? actual.length : actual,
@@ -118,6 +118,35 @@ export const hasLength = createAssertion<any, number>({
 			: false;
 	},
 });
+
+export const hasProperty = (
+	actual: any,
+	path: string | any[],
+	options: BaseOptions & { value?: any }
+) => {
+	if (!Array.isArray(path)) {
+		path = path.split(".");
+	}
+
+	let current = actual;
+	const tmp = path.slice();
+	for (let i = 0; i < tmp.length; i++) {
+		current = current[tmp[i]];
+	}
+
+	const hasValue = "value" in options;
+	const suffix = hasValue ? ` that equals #{exp}` : "";
+
+	_assert({
+		result: hasValue ? current === options.value : true,
+		invert: !!options.invert,
+		customMessage: options.customMessage,
+		message: `Expected #{act} to have property ${path}${suffix}`,
+		messageNot: `Expected #{act} not to have property ${path}${suffix}`,
+		actual,
+		expected: options.value,
+	});
+};
 
 export const isEqual = createAssertion({
 	message: `Expected #{act} to strictly equal #{exp}`,
@@ -135,6 +164,41 @@ export const isMatch = createAssertion<string, RegExp>({
 	message: `Expected #{act} to match #{exp}`,
 	messageNot: `Expected #{act} not to match #{exp}`,
 	fn: (actual, regex) => regex.test(actual),
+});
+
+export type ValueType =
+	| "array"
+	| "bigint"
+	| "boolean"
+	| "function"
+	| "map"
+	| "number"
+	| "object"
+	| "set"
+	| "string"
+	| "symbol"
+	| "undefined"
+	| "weakmap"
+	| "weakset";
+export const isType = createAssertion<any, ValueType>({
+	message: `Expected #{act} to be of type #{exp}`,
+	messageNot: `Expected #{act} not be of type #{exp}`,
+	fn: (actual, type) => {
+		switch (type) {
+			case "array":
+				return Array.isArray(actual);
+			case "map":
+				return actual instanceof Map;
+			case "set":
+				return actual instanceof Set;
+			case "weakmap":
+				return actual instanceof WeakMap;
+			case "weakset":
+				return actual instanceof WeakSet;
+			default:
+				return typeof actual === type;
+		}
+	},
 });
 
 export const doesInclude = createAssertion<

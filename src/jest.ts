@@ -4,6 +4,7 @@ import {
 	doesIncludeShape,
 	doesThrow,
 	hasLength,
+	hasProperty,
 	isDeepEqual,
 	isFalsy,
 	isGreaterThan,
@@ -14,6 +15,8 @@ import {
 	isMatch,
 	isPrimitive,
 	isTruthy,
+	isType,
+	ValueType,
 } from "./shared";
 import {
 	didReturn,
@@ -29,8 +32,12 @@ function notImplemented() {
 }
 
 class JestAssertion<T> {
-	protected invert = false;
-	constructor(public actual: T) {}
+	constructor(public actual: T, public invert = false) {}
+
+	get not() {
+		this.invert = !this.invert;
+		return this;
+	}
 
 	toBe(expected: T) {
 		isPrimitive(this.actual, expected, { invert: this.invert });
@@ -74,11 +81,16 @@ class JestAssertion<T> {
 	}
 
 	toHaveLength(n: number) {
-		hasLength(this.actual, n);
+		hasLength(this.actual, n, { invert: !this.invert });
 	}
 
-	toHaveProperty() {}
-	toBeCloseTo() {}
+	toHaveProperty(path: string | any[], value?: any) {
+		hasProperty(this.actual, path, { invert: !this.invert, value });
+	}
+
+	toBeCloseTo() {
+		throw notImplemented();
+	}
 
 	toBeDefined() {
 		isPrimitive(this.actual, undefined, { invert: !this.invert });
@@ -108,22 +120,6 @@ class JestAssertion<T> {
 		isInstanceOf(this.actual, expected, { invert: this.invert });
 	}
 
-	toBeNull() {
-		isPrimitive(this.actual, null, { invert: this.invert });
-	}
-
-	toBeTruthy() {
-		isTruthy(this.actual, undefined, { invert: this.invert });
-	}
-
-	toBeUndefined() {
-		isPrimitive(this.actual, undefined, { invert: this.invert });
-	}
-
-	toBeNaN() {
-		isPrimitive(this.actual, NaN, { invert: this.invert });
-	}
-
 	toContain(value: any) {
 		doesInclude(this.actual as any, value, { invert: this.invert });
 	}
@@ -147,8 +143,30 @@ class JestAssertion<T> {
 		doesThrow(this.actual as any, err, { invert: this.invert });
 	}
 
+	// Candidates for removal:
+	toBeNull() {
+		isPrimitive(this.actual, null, { invert: this.invert });
+	}
+
+	toBeTruthy() {
+		isTruthy(this.actual, undefined, { invert: this.invert });
+	}
+
+	toBeUndefined() {
+		isPrimitive(this.actual, undefined, { invert: this.invert });
+	}
+
+	toBeNaN() {
+		isPrimitive(this.actual, NaN, { invert: this.invert });
+	}
+
 	toThrowError(err?: RegExp | string | ErrorConstructor) {
 		this.toThrow(err);
+	}
+
+	// Non-jest stuff
+	toBeType(type: ValueType) {
+		isType(this.actual, type, { invert: this.invert });
 	}
 }
 
