@@ -1,7 +1,9 @@
+import { SinonSpy } from "sinon";
 import {
 	doesInclude,
 	doesIncludeShape,
 	doesThrow,
+	hasLength,
 	isDeepEqual,
 	isFalsy,
 	isGreaterThan,
@@ -13,7 +15,14 @@ import {
 	isPrimitive,
 	isTruthy,
 } from "./shared";
-import { isCalled, isCalledTimes } from "./sinon";
+import {
+	didReturn,
+	didReturnTimes,
+	isCalled,
+	isCalledNthWith,
+	isCalledTimes,
+	isCalledWith,
+} from "./sinon";
 
 function notImplemented() {
 	return new Error("Not implemented yet");
@@ -36,26 +45,38 @@ class JestAssertion<T> {
 	}
 
 	toHaveBeenCalledWith(...args: any[]) {
-		// this.assertion.calledWith(...args);
+		isCalledWith(this.actual as any, args, { invert: this.invert });
 	}
 
 	toHaveBeenLastCalledWith(...args: any[]) {
-		throw notImplemented();
+		const spy = (this.actual as any) as SinonSpy;
+		isCalledNthWith(spy, [spy.callCount - 1, ...args]);
 	}
 
 	toHaveBeenNthCalledWith(nth: number, ...args: any[]) {
-		// this.assertion.call(...args);
+		isCalledNthWith(this.actual as any, [nth, ...args]);
+	}
+
+	toHaveReturned() {
+		didReturn(this.actual as any, undefined, { invert: this.invert });
+	}
+
+	toHaveReturnedTimes(count: number) {
+		didReturnTimes(this.actual as any, count, { invert: this.invert });
+	}
+
+	toHaveReturnedWith() {}
+	toHaveLastReturnedWith() {
+		throw notImplemented();
+	}
+	toHaveNthReturnedWith() {
 		throw notImplemented();
 	}
 
-	toHaveReturned() {}
+	toHaveLength(n: number) {
+		hasLength(this.actual, n);
+	}
 
-	toHaveReturnedTimes(count: number) {}
-	toHaveReturnedWith() {}
-	toHaveLastReturnedWith() {}
-	toHaveNthReturnedWith() {}
-
-	toHaveLength() {}
 	toHaveProperty() {}
 	toBeCloseTo() {}
 
@@ -84,7 +105,7 @@ class JestAssertion<T> {
 	}
 
 	toBeInstanceOf(expected: any) {
-		isInstanceOf(this.actual, expected);
+		isInstanceOf(this.actual, expected, { invert: this.invert });
 	}
 
 	toBeNull() {

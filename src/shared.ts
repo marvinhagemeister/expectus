@@ -42,7 +42,7 @@ export function createAssertion<T, U>(opts: {
 	message: string;
 	messageNot: string;
 	fn: (actual: T, expected: U) => boolean;
-	getActual?: (actual: T) => any;
+	getActual?: (actual: T, expected: U) => any;
 }) {
 	return (actual: T, expected: U, options: BaseOptions = {}) => {
 		const result = opts.fn(actual, expected);
@@ -105,6 +105,18 @@ export const isInstanceOf = createAssertion<any, any>({
 	message: `Expected #{act} to be an instance of #{exp}`,
 	messageNot: `Expected #{act} not to be an instance of #{exp}`,
 	fn: (actual, expected) => actual instanceof expected,
+});
+
+export const hasLength = createAssertion<any, number>({
+	message: `Expected #{act} to be have length #{exp}`,
+	messageNot: `Expected #{act} not to have length #{exp}`,
+	getActual: actual =>
+		typeof actual === "object" && actual !== null ? actual.length : actual,
+	fn: (actual, expected) => {
+		return typeof actual === "object" && actual !== null
+			? actual.length === expected
+			: false;
+	},
 });
 
 export const isEqual = createAssertion({
